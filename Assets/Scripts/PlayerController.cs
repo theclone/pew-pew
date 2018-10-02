@@ -7,23 +7,23 @@ public class PlayerController : MonoBehaviour
 
     public const string HORIZONTAL = "Horizontal";
     public const string VERTICAL = "Vertical";
-	public const string FIRE = "Fire1";
+    public const string FIRE = "Fire1";
 
     [SerializeField]
     private float speed;
-	[SerializeField]
-	private float fireDelay;
+    [SerializeField]
+    private float fireDelay;
     [SerializeField]
     private Boundary boundary;
     [SerializeField]
     private float tilt;
-	[SerializeField]
-	private GameObject shot;
-	[SerializeField]
-	private Transform shotSpawn;
+    [SerializeField]
+    private GameObject shot;
+    [SerializeField]
+    private Transform shotSpawn;
 
     private new Rigidbody rigidbody;
-	private float nextFire;
+    private float nextFire;
 
     void Start()
     {
@@ -32,10 +32,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-		if (Input.GetButton(FIRE) && Time.time > nextFire) {
-			nextFire = Time.time + fireDelay;
-			GameObject clone = Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
-		}
+        if (Input.GetButton(FIRE) && Time.time > nextFire)
+        {
+            nextFire = Time.time + fireDelay;
+            GameObject clone = Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+        }
     }
 
     void FixedUpdate()
