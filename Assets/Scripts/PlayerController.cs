@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     private float speed;
 	[SerializeField]
 	private Boundary boundary;
+	[SerializeField]
+	private float tilt;
 
 	private Rigidbody rigidbody;
 
@@ -35,5 +37,6 @@ public class PlayerController : MonoBehaviour
             0.0f,
             Mathf.Clamp(rigidbody.position.z, boundary.zMin, boundary.zMax)
         );
+		rigidbody.rotation = Quaternion.Euler (0.0f, 0.0f, rigidbody.velocity.x * -tilt);
     }
 }
