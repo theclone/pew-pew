@@ -8,6 +8,8 @@ public class DestroyByContact : MonoBehaviour {
 	private GameObject explosion;
 	[SerializeField]
 	private GameObject playerExplosion;
+	[SerializeField]
+	private int scoreValue;
 
 	void OnTriggerEnter(Collider other) 
     {
@@ -22,7 +24,8 @@ public class DestroyByContact : MonoBehaviour {
         {
             Instantiate(playerExplosion, other.transform.position, other.transform.rotation);
         }
-		
+		else 
+			GameController.instance.AddScore(scoreValue);
         Destroy(other.gameObject);
         Destroy(gameObject);
     }

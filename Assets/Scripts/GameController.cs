@@ -5,6 +5,16 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
 
+	private static GameController _instance;
+	public static GameController instance {
+		get {
+			if (_instance == null) 
+				_instance = FindObjectOfType<GameController>();
+			return _instance;
+		}
+
+	}
+
     [SerializeField]
     private GameObject hazard;
     [SerializeField]
@@ -17,9 +27,17 @@ public class GameController : MonoBehaviour
     private float startWait;
     [SerializeField]
     private float waveWait;
+	[SerializeField]
+    private GameObject scoreTextObject;
+
+	private int score;
+	private UnityEngine.UI.Text scoreText;
 
     void Start()
     {
+		score = 0;
+		scoreText = scoreTextObject.GetComponent<UnityEngine.UI.Text>();
+		UpdateScore();
         StartCoroutine(SpawnWaves());
     }
 
@@ -38,4 +56,13 @@ public class GameController : MonoBehaviour
 			yield return new WaitForSeconds(waveWait);
         }
     }
+
+	public void AddScore(int toAdd) {
+		score += toAdd;
+		UpdateScore();
+	}
+
+	public void UpdateScore() {
+		scoreText.text = "Score: " + score;
+	}
 }
