@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
 
     public const string HORIZONTAL = "Horizontal";
     public const string VERTICAL = "Vertical";
-    public const string FIRE = "Fire1";
+    public const string FIRE_BUTTON = "Fire1";
 
     [SerializeField]
     private float speed;
@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButton(FIRE) && Time.time > nextFire)
+        if (Input.GetButton(FIRE_BUTTON) && Time.time > nextFire)
         {
             nextFire = Time.time + fireDelay;
             Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
