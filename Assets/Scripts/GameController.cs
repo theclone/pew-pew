@@ -23,7 +23,7 @@ public class GameController : MonoBehaviour
     }
 
     [SerializeField]
-    private GameObject hazard;
+    private GameObject[] hazards;
     [SerializeField]
     private Vector3 spawnValues;
     [SerializeField]
@@ -79,7 +79,7 @@ public class GameController : MonoBehaviour
             {
                 Vector3 spawnPosition = new Vector3(Random.Range(-spawnValues.x, spawnValues.x), spawnValues.y, spawnValues.z);
                 Quaternion spawnRotation = Quaternion.identity;
-                Instantiate(hazard, spawnPosition, spawnRotation);
+                Instantiate(hazards[Random.Range(0, hazards.Length)], spawnPosition, spawnRotation);
                 yield return new WaitForSeconds(spawnGap);
             }
             if (gameOver)
