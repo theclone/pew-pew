@@ -35,7 +35,8 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButton(FIRE) && Time.time > nextFire)
         {
             nextFire = Time.time + fireDelay;
-            GameObject clone = Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+            Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+			GetComponent<AudioSource>().Play();
         }
     }
 
