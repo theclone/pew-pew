@@ -7,7 +7,10 @@ public class PlayerController : MonoBehaviour
 
     public const string HORIZONTAL = "Horizontal";
     public const string VERTICAL = "Vertical";
-    public const string FIRE_BUTTON = "Fire1";
+    public const string FIRE_BUTTON = "Fire";
+    public const string BOMB_BUTTON = "Bomb";
+    public const int DEFAULT_BOMB_NUM = 3;
+    public const float BOMB_Y_OFFSET = -1;
 
     [SerializeField]
     private float speed;
@@ -21,23 +24,43 @@ public class PlayerController : MonoBehaviour
     private GameObject shot;
     [SerializeField]
     private Transform shotSpawn;
+    [SerializeField]
+    private AudioClip shotSFX;
+    [SerializeField]
+    private GameObject bomb;
+    [SerializeField]
+    private float bombCooldown;
+    [SerializeField]
+    private AudioClip bombSFX;
 
     private new Rigidbody rigidbody;
+    private AudioSource audioSource;
     private float nextFire;
+    private int numBombs;
 
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
+        numBombs = DEFAULT_BOMB_NUM;
     }
 
     void Update()
     {
-        if (Input.GetButton(FIRE_BUTTON) && Time.time > nextFire)
+        if (numBombs > 0 && Input.GetButton(BOMB_BUTTON) && Time.time > nextFire)
+        {
+            nextFire = Time.time + bombCooldown;
+            numBombs -= 1;
+            Instantiate(bomb, transform.position + new Vector3(0, BOMB_Y_OFFSET, 0), transform.rotation);
+            audioSource.PlayOneShot(bombSFX);
+        }
+        else if (Input.GetButton(FIRE_BUTTON) && Time.time > nextFire)
         {
             nextFire = Time.time + fireDelay;
             Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
-			GetComponent<AudioSource>().Play();
+            audioSource.PlayOneShot(shotSFX);
         }
+
     }
 
     void FixedUpdate()
@@ -55,6 +78,7 @@ public class PlayerController : MonoBehaviour
             0.0f,
             Mathf.Clamp(rigidbody.position.z, boundary.zMin, boundary.zMax)
         );
+
         rigidbody.rotation = Quaternion.Euler(0.0f, 0.0f, rigidbody.velocity.x * -tilt);
     }
 }
