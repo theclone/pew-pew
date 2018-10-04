@@ -8,7 +8,8 @@ public class GameController : MonoBehaviour
     public const string SCORE_PREFIX = "Score: ";
     public const string RESTART_BUTTON = "Restart";
     public const string GAME_OVER_MESSAGE = "Game Over!";
-	public const string RESTART_MESSAGE = "Press 'R' for Restart";
+    public const string RESTART_MESSAGE = "Press 'R' for Restart";
+    public const int BOMB_ICON_SPACING = 30;
 
     private static GameController _instance;
     public static GameController instance
@@ -40,6 +41,10 @@ public class GameController : MonoBehaviour
     private GameObject restartTextObject;
     [SerializeField]
     private GameObject gameOverTextObject;
+    [SerializeField]
+    private GameObject bombIcon;
+    [SerializeField]
+    private GameObject gameCanvas;
 
 
     private bool gameOver;
@@ -48,16 +53,21 @@ public class GameController : MonoBehaviour
     private UnityEngine.UI.Text scoreText;
     private UnityEngine.UI.Text restartText;
     private UnityEngine.UI.Text gameOverText;
+    private List<GameObject> bombIcons;
+    private int currBombIcons;
 
     void Start()
     {
         score = 0;
+        currBombIcons = 0;
+        bombIcons = new List<GameObject>();
         scoreText = scoreTextObject.GetComponent<UnityEngine.UI.Text>();
         restartText = restartTextObject.GetComponent<UnityEngine.UI.Text>();
         gameOverText = gameOverTextObject.GetComponent<UnityEngine.UI.Text>();
         restartText.text = "";
         gameOverText.text = "";
         UpdateScore();
+        UpdateBombIcons();
         StartCoroutine(SpawnWaves());
     }
 
@@ -101,6 +111,23 @@ public class GameController : MonoBehaviour
     public void UpdateScore()
     {
         scoreText.text = SCORE_PREFIX + score;
+    }
+
+    public void UpdateBombIcons()
+    {
+        int numBombs = PlayerController.instance.GetNumBombs();
+        while (currBombIcons > numBombs)
+        {
+            Destroy(bombIcons[currBombIcons - 1]);
+            bombIcons[currBombIcons - 1] = null;
+            currBombIcons -= 1;
+        }
+        for (; currBombIcons < numBombs; currBombIcons++)
+        {
+            bombIcons.Add(Instantiate(bombIcon, gameCanvas.transform));
+            Vector2 iconOffset = new Vector2(currBombIcons * BOMB_ICON_SPACING, 0);
+            bombIcons[currBombIcons].GetComponent<RectTransform>().anchoredPosition += iconOffset;
+        }
     }
 
     public void GameOver()
