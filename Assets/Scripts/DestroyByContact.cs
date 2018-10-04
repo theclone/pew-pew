@@ -28,7 +28,9 @@ public class DestroyByContact : MonoBehaviour
         }
         else
             GameController.instance.AddScore(scoreValue);
-        Destroy(other.gameObject);
+        
+        if (other.tag != "Bomb")
+            Destroy(other.gameObject);
         Destroy(gameObject);
     }
 }
