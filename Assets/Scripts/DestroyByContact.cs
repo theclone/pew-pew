@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class DestroyByContact : MonoBehaviour
 {
+    public const string BoundaryTag = "Boundary";
+    public const string PlayerTag = "Player";
+    public const string BombTag = "Bomb";
 
     [SerializeField]
     private GameObject explosion;
@@ -14,23 +17,25 @@ public class DestroyByContact : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Boundary")
+        if (other.tag.Equals(BoundaryTag))
         {
             return;
         }
 
         Instantiate(explosion, transform.position, transform.rotation);
 
-        if (other.tag == "Player")
+        if (other.tag.Equals(PlayerTag))
         {
             Instantiate(playerExplosion, other.transform.position, other.transform.rotation);
-			GameController.instance.GameOver();
+            GameController.Instance.GameOver();
         }
         else
-            GameController.instance.AddScore(scoreValue);
-        
-        if (other.tag != "Bomb")
+            GameController.Instance.AddScore(scoreValue);
+
+        if (!(other.tag.Equals(BombTag)))
+        {
             Destroy(other.gameObject);
+        }
         Destroy(gameObject);
     }
 }

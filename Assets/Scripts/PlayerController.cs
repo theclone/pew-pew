@@ -2,26 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(AudioSource))]
+public class PlayerController : Singleton<PlayerController>
 {
-
-    public const string HORIZONTAL = "Horizontal";
-    public const string VERTICAL = "Vertical";
-    public const string FIRE_BUTTON = "Fire";
-    public const string BOMB_BUTTON = "Bomb";
-    public const float BOMB_Y_OFFSET = -1;
-
-    private static PlayerController _instance;
-    public static PlayerController instance
-    {
-        get
-        {
-            if (_instance == null)
-                _instance = FindObjectOfType<PlayerController>();
-            return _instance;
-        }
-
-    }
+    public const string Horizontal = "Horizontal";
+    public const string Vertical = "Vertical";
+    public const string FireButton = "Fire";
+    public const string BombButton = "Bomb";
+    public const float BombYOffset = -1;
 
     [SerializeField]
     private float speed;
@@ -58,28 +47,27 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (numBombs > 0 && Input.GetButton(BOMB_BUTTON) && Time.time > nextFire)
+        if (numBombs > 0 && Input.GetButton(BombButton) && Time.time > nextFire)
         {
             nextFire = Time.time + bombCooldown;
             numBombs -= 1;
-            Instantiate(bomb, transform.position + new Vector3(0, BOMB_Y_OFFSET, 0), transform.rotation);
-            GameController.instance.UpdateBombIcons();
+            Instantiate(bomb, transform.position + new Vector3(0, BombYOffset, 0), transform.rotation);
+            GameController.Instance.UpdateBombIcons();
             audioSource.PlayOneShot(bombSFX);
         }
-        else if (Input.GetButton(FIRE_BUTTON) && Time.time > nextFire)
+        else if (Input.GetButton(FireButton) && Time.time > nextFire)
         {
             nextFire = Time.time + fireDelay;
             Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
             audioSource.PlayOneShot(shotSFX);
         }
-
     }
 
     void FixedUpdate()
     {
 
-        float moveHorizontal = Input.GetAxis(HORIZONTAL);
-        float moveVertical = Input.GetAxis(VERTICAL);
+        float moveHorizontal = Input.GetAxis(Horizontal);
+        float moveVertical = Input.GetAxis(Vertical);
 
         Vector3 movement = new Vector3(moveHorizontal, 0f, moveVertical);
         rigidbody.velocity = movement * speed;
@@ -94,11 +82,17 @@ public class PlayerController : MonoBehaviour
         rigidbody.rotation = Quaternion.Euler(0.0f, 0.0f, rigidbody.velocity.x * -tilt);
     }
 
-    public void SetNumBombs(int newBombs) 
-    { 
+    public void SetNumBombs(int newBombs)
+    {
         numBombs = newBombs;
-        GameController.instance.UpdateBombIcons();
+        GameController.Instance.UpdateBombIcons();
     }
 
-    public int GetNumBombs() { return numBombs; }
+    public int BombCount
+    {
+        get
+        {
+            return numBombs;
+        }
+    }
 }

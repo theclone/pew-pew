@@ -1,27 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
-public class GameController : MonoBehaviour
+public class GameController : Singleton<GameController>
 {
-    public const string SCORE_PREFIX = "Score: ";
-    public const string RESTART_BUTTON = "Restart";
-    public const string GAME_OVER_MESSAGE = "Game Over!";
-    public const string RESTART_MESSAGE = "Press 'R' for Restart";
-    public const int BOMB_ICON_SPACING = 30;
-
-    private static GameController _instance;
-    public static GameController instance
-    {
-        get
-        {
-            if (_instance == null)
-                _instance = FindObjectOfType<GameController>();
-            return _instance;
-        }
-
-    }
+    public const string ScorePrefix = "Score: ";
+    public const string RestartButton = "Restart";
+    public const string GameOverMessage = "Game Over!";
+    public const string RestartMessage = "Press 'R' for Restart";
+    public const int BombIconSpacing = 30;
 
     [SerializeField]
     private GameObject[] hazards;
@@ -58,6 +47,11 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        Assert.IsNotNull(bombIcon);
+        Assert.IsNotNull(gameCanvas);
+        Assert.IsNotNull(scoreTextObject);
+        Assert.IsNotNull(restartTextObject);
+        Assert.IsNotNull(gameOverTextObject);
         score = 0;
         currBombIcons = 0;
         bombIcons = new List<GameObject>();
@@ -75,7 +69,7 @@ public class GameController : MonoBehaviour
     {
         if (restart)
         {
-            if (Input.GetButtonDown(RESTART_BUTTON))
+            if (Input.GetButtonDown(RestartButton))
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
@@ -94,7 +88,7 @@ public class GameController : MonoBehaviour
             }
             if (gameOver)
             {
-                restartText.text = RESTART_MESSAGE;
+                restartText.text = RestartMessage;
                 restart = true;
                 break;
             }
@@ -110,22 +104,24 @@ public class GameController : MonoBehaviour
 
     public void UpdateScore()
     {
-        scoreText.text = SCORE_PREFIX + score;
+        scoreText.text = ScorePrefix + score;
     }
 
     public void UpdateBombIcons()
     {
-        int numBombs = PlayerController.instance.GetNumBombs();
+        int numBombs = PlayerController.Instance.BombCount;
+
         while (currBombIcons > numBombs)
         {
             Destroy(bombIcons[currBombIcons - 1]);
             bombIcons[currBombIcons - 1] = null;
             currBombIcons -= 1;
         }
+
         for (; currBombIcons < numBombs; currBombIcons++)
         {
             bombIcons.Add(Instantiate(bombIcon, gameCanvas.transform));
-            Vector2 iconOffset = new Vector2(currBombIcons * BOMB_ICON_SPACING, 0);
+            Vector2 iconOffset = new Vector2(currBombIcons * BombIconSpacing, 0);
             bombIcons[currBombIcons].GetComponent<RectTransform>().anchoredPosition += iconOffset;
         }
     }

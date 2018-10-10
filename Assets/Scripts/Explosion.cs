@@ -1,30 +1,52 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
-public class Explosion : MonoBehaviour {
+[RequireComponent(typeof(SphereCollider))]
+public class Explosion : MonoBehaviour
+{
+	public const float MinExplosionRange = 0f;
+	public const float MaxExplosionRange = 20f;
+	public const float MinVisualExpansionRange = 0f;
+	public const float MaxVisualExpansionRange = 1f;
+	public const float MinColliderExpansionRange = 0f;
+	public const float MaxColliderExpansionRange = 0.1f;
 
-	[SerializeField]
-	private float explosionSize;
-	[SerializeField]
-	private float visualExpansionRate;
-	[SerializeField]
-	private float colliderExpansionRate;
+	[Range(MinExplosionRange, MaxExplosionRange)]
+    [SerializeField]
+    private float maxExplosionRadius;
+	[Range(MinVisualExpansionRange, MaxVisualExpansionRange)]
+    [SerializeField]
+    private float visualExpansionPerFrame;
+	[Range(MinColliderExpansionRange, MaxColliderExpansionRange)]
+    [SerializeField]
+    private float colliderExpansionPerFrame;
 
-	private SphereCollider sphereCollider;
-	private Vector3 expansionVector;
+    private SphereCollider sphereCollider;
+    private Vector3 expansionVector;
 
-	// Use this for initialization
-	void Start () {
-		sphereCollider = GetComponent<SphereCollider>();
-		expansionVector = new Vector3(visualExpansionRate, visualExpansionRate, visualExpansionRate);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (sphereCollider.radius < explosionSize) {
-			transform.localScale += expansionVector;
-			sphereCollider.radius += colliderExpansionRate; // collider increases with scale, but not enough to match visuals
-		}
-	}
+    void Start()
+    {
+        sphereCollider = GetComponent<SphereCollider>();
+		Assert.IsNotNull(sphereCollider);
+		Assert.IsTrue(maxExplosionRadius > 0);
+        expansionVector = new Vector3
+		(
+			visualExpansionPerFrame, 
+			visualExpansionPerFrame, 
+			visualExpansionPerFrame
+		);
+    }
+
+    void Update()
+    {
+        if (sphereCollider.radius < maxExplosionRadius)
+        {
+            transform.localScale += expansionVector;
+			// Collider increases with scale, but not enough to match visuals, 
+			// so we add an extra expansion per frame for the collider only.
+            sphereCollider.radius += colliderExpansionPerFrame;
+        }
+    }
 }

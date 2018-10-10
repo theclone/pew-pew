@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class DestroyByTime : MonoBehaviour
 {
-
     [SerializeField]
     private float lifetime;
 
-    // Use this for initialization
     void Start()
     {
         Destroy(gameObject, lifetime);
