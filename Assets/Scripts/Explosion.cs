@@ -29,8 +29,12 @@ public class Explosion : MonoBehaviour
     void Start()
     {
         sphereCollider = GetComponent<SphereCollider>();
+        
 		Assert.IsNotNull(sphereCollider);
 		Assert.IsTrue(maxExplosionRadius > 0);
+        Assert.IsTrue(visualExpansionPerFrame > 0);
+        Assert.IsTrue(colliderExpansionPerFrame > 0);
+
         expansionVector = new Vector3
 		(
 			visualExpansionPerFrame, 

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(AudioSource))]
@@ -43,6 +44,9 @@ public class PlayerController : Singleton<PlayerController>
     {
         rigidbody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
+
+        Assert.IsNotNull(rigidbody);
+        Assert.IsNotNull(audioSource);
     }
 
     void Update()

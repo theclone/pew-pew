@@ -52,12 +52,18 @@ public class GameController : Singleton<GameController>
         Assert.IsNotNull(scoreTextObject);
         Assert.IsNotNull(restartTextObject);
         Assert.IsNotNull(gameOverTextObject);
+        
         score = 0;
         currBombIcons = 0;
         bombIcons = new List<GameObject>();
         scoreText = scoreTextObject.GetComponent<UnityEngine.UI.Text>();
         restartText = restartTextObject.GetComponent<UnityEngine.UI.Text>();
         gameOverText = gameOverTextObject.GetComponent<UnityEngine.UI.Text>();
+
+        Assert.IsNotNull(scoreText);
+        Assert.IsNotNull(restartText);
+        Assert.IsNotNull(gameOverText);
+
         restartText.text = "";
         gameOverText.text = "";
         UpdateScore();
@@ -70,7 +76,9 @@ public class GameController : Singleton<GameController>
         if (restart)
         {
             if (Input.GetButtonDown(RestartButton))
+            {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
         }
     }
 
